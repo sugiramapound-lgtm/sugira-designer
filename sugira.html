@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arsenal Fan Portal</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background: linear-gradient(rgba(0, 0, 0, 0.65), rgba(0, 0, 0, 0.75)), url('arse.png') no-repeat center center fixed;
+            background-size: cover;
+            min-height: 100vh;
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .content-wrapper {
+            flex: 1 0 auto;
+            position: relative;
+        }
+
+        /* Top Header Navbar Layout */
+        .nav {
+            width: 100%;
+            height: 90px;
+            display: flex;
+            flex-direction: row;
+            background-color: #063672;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.4);
+            padding: 0 30px;
+            position: relative;
+            z-index: 10;
+        }
+
+        .log img {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            border: 3px solid #FFFFFF;
+            object-fit: cover;
+            background-color: white;
+        }
+
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .lang-select {
+            background-color: #EF0107;
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 20px;
+            font-weight: bold;
+            cursor: pointer;
+            outline: none;
+            transition: 0.3s;
+        }
+
+        .lang-select:hover {
+            background-color: #9C824A;
+        }
+
+        .login button {
+            width: 90px;
+            height: 35px;
+            border: none;
+            border-radius: 20px;
+            background-color: #EF0107;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .login button:hover {
+            background-color: #9C824A;
+            transform: scale(1.05);
+        }
+
+        /* Interactive 3-Line Hamburger Menu Bar Button */
+        .menu-bar-btn {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            cursor: pointer;
+            padding: 5px;
+            transition: 0.3s;
+        }
+
+        .menu-bar-btn span {
+            width: 35px;
+            height: 5px;
+            background-color: white;
+            border-radius: 5px;
+            transition: 0.3s;
+        }
+
+        .menu-bar-btn:hover span {
+            background-color: #9C824A;
+        }
+
+        /* Ticker Ribbons Bar Component */
+        .currency-bar {
+            background-color: rgba(6, 54, 114, 0.95);
+            color: white;
+            text-align: center;
+            padding: 12px;
+            font-weight: bold;
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            border-bottom: 2px solid #9C824A;
+        }
+
+        /* Hidden Dropdown Menu - Only opens when clicking the menu bar button */
+        .hidden-dropdown-menu {
+            display: none; /* Completely hidden by default */
+            position: absolute;
+            top: 90px;
+            right: 30px;
+            background-color: #063672;
+            width: 220px;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            border-radius: 0 0 15px 15px;
+            box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            z-index: 100;
+            overflow: hidden;
+        }
+
+        .hidden-dropdown-menu li {
+            color: white;
+            font-weight: bold;
+            text-align: center;
+            padding: 15px 20px;
+            cursor: pointer;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            transition: 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .hidden-dropdown-menu li:last-child {
+            border-bottom: none;
+        }
+
+        .hidden-dropdown-menu li:hover {
+            background-color: #EF0107;
+            color: white;
+        }
+
+        /* Central Layout Content Display Area */
+        .main-container {
+            max-width: 650px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .page-section {
+            display: none; /* Controlled dynamically via JavaScript */
+            flex-direction: column;
+            background-color: rgba(248, 242, 242, 0.96);
+            padding: 35px;
+            border-radius: 20px;
+            box-shadow: 0px 10px 25px rgba(0, 0, 0, 0.6);
+            animation: slideUpFade 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+
+        #homeSection {
+            display: flex; /* Display Home tab content on initial load */
+        }
+
+        .page-section h2 {
+            color: #063672;
+            margin-top: 0;
+            font-family: Verdana, Geneva, Tahoma, sans-serif;
+            border-bottom: 3px solid #EF0107;
+            padding-bottom: 10px;
+            font-size: 24px;
+        }
+
+        .page-section p {
+            color: #222;
+            line-height: 1.7;
+            font-size: 16px;
+        }
+
+        /* Custom Services Layout Elements */
+        .hobby-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-top: 10px;
+        }
+
+        .hobby-card {
+            background: white;
+            border-left: 6px solid #EF0107;
+            padding: 18px;
+            border-radius: 8px;
+            box-shadow: 0 3px 6px rgba(0,0,0,0.08);
+        }
+
+        .hobby-card h3 {
+            margin: 0 0 8px 0;
+            color: #063672;
+            font-size: 18px;
+        }
+
+        /* Contact Section Details Box Styling */
+        .contact-info {
+            background: #063672;
+            color: white;
+            padding: 20px;
+            border-radius: 12px;
+            margin-top: 20px;
+            box-shadow: inset 0 2px 5px rgba(0,0,0,0.2);
+        }
+
+        .contact-info div {
+            margin-bottom: 10px;
+            font-size: 15px;
+        }
+
+        .contact-info div strong {
+            color: #9C824A;
+        }
+
+        /* Login Window Wrapper Panel */
+        #loginform {
+            display: none;
+            flex-direction: column;
+            gap: 12px;
+            margin: 20px auto;
+            width: 320px;
+            align-items: center;
+            justify-content: center;
+            background-color: #f8f2f2;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0px 10px 25px rgba(0, 0, 0, 0.6);
+        }
+
+        #loginform input,
+        #loginform button {
+            width: 240px;
+            height: 42px;
+            color: #FFFFFF;
+            border: none;
+            border-radius: 20px;
+            padding-left: 10px;
+            text-align: center;
+            font-size: 15px;
+        }
+
+        #loginform h2 {
+            color: black;
+            font-family: Verdana, Geneva, Tahoma, sans-serif;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        #loginform input::placeholder {
+            color: white;
+        }
+
+        #loginform input {
+            color: #FFFFFF;
+            background-color: rgb(212, 143, 110);
+        }
+
+        #loginform input:focus {
+            outline: none;
+            border: 2px solid #EF0107;
+        }
+
+        #loginform button {
+            background-color: #EF0107;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        #loginform button:hover {
+            background-color: #9C824A;
+            transform: scale(1.05);
+        }
+
+        /* Footer Element Box Content */
+        .site-footer {
+            flex-shrink: 0;
+            background-color: rgba(6, 54, 114, 0.98);
+            color: white;
+            text-align: center;
+            padding: 18px;
+            font-size: 14px;
+            font-weight: bold;
+            border-top: 4px solid #EF0107;
+            margin-top: auto;
+        }
+
+        .site-footer span {
+            color: #9C824A;
+        }
+
+        @keyframes slideUpFade {
+            from { opacity: 0; transform: translateY(12px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="content-wrapper">
+        <!-- Main Top Header Bar Row -->
+        <div class="nav">
+            <div class="log">
+                <img src="./arse/download.jpg" alt="logo">
+            </div>
+            
+            <div class="nav-actions">
+                <select class="lang-select" id="langSelector" onchange="changeLanguage()">
+                    <option value="en">English</option>
+                    <option value="es">Español</option>
+                    <option value="fr">Français</option>
+                    <option value="de">Deutsch</option>
+                    <option value="ar">العربية</option>
+                    <option value="zh">中文</option>
+                    <option value="ja">日本語</option>
+                    <option value="hi">हिन्दी</option>
+                    <option value="pt">Português</option>
+                    <option value="it">Italiano</option>
+                </select>
+
+                <div class="login">
+                    <button onclick="toggleloginform()" id="loginBtn">login</button>
+                </div>
+
+                <!-- 3-Line Menu Bar Toggle Button -->
+                <div class="menu-bar-btn" onclick="toggleMenuBar()">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+            </div>
+
+            <!-- Hidden Navigation Menu (Only drops down when clicking the menu bar icon) -->
+            <ul class="hidden-dropdown-menu" id="dropdownMenu">
+                <li onclick="navigateToSection('homeSection')" id="menuHome">Home</li>
+                <li onclick="navigateToSection('aboutSection')" id="menuAbout">About</li>
+                <li onclick="navigateToSection('serviceSection')" id="menuService">Service</li>
+                <li onclick="navigateToSection('contactSection')" id="menuContact">Contact</li>
+            </ul>
+        </div>
+
+        <!-- Live Exchange Currency Strip component -->
+        <div class="currency-bar" id="currencyTicker">
+            <span id="ticketLabel">Match Ticket: £65.00</span>
+            <span id="shirtLabel">Official Shirt: £80.00</span>
+        </div>
+
+        <!-- Login Form Element Node Box -->
+        <form action="home.html" id="loginform">
+            <h2 id="loginTitle">login to arsenal</h2>
+            <input type="text" name="username" id="inputUser" placeholder="username:">
+            <input type="password" name="password" id="inputPass" placeholder="password:">
+            <input type="email" name="email" id="inputEmail" placeholder="email:">
+            <button id="submitBtn">submit</button>
+        </form>
+
+        <!-- Central Layout Dynamic Core Frame Display Containers -->
+        <div class="main-container">
+            
+            <!-- Home Section Card Block -->
+            <div id="homeSection" class="page-section">
+                <h2 id="homeTitle">Welcome Sugira Fabrice Website</h2>
+                <p id="homeText">Welcome to the premium fan platform hub. Explore dynamic match day features, store updates, and join the global family. Select your language from the navigation bar menu above to translate pricing displays instantly.</p>
+            </div>
+
+            <!-- About Section Card Block -->
+            <div id="aboutSection" class="page-section">
+                <h2 id="aboutTitle">About Us</h2>
+                <p id="aboutText">Founded as Dial Square in 1886, our rich traditions and community connection drive our passion forward. This application showcases clean custom layouts built for true execution enthusiasts worldwide.</p>
+            </div>
+
+            <!-- Services Section Card Block -->
+            <div id="serviceSection" class="page-section">
+                <h2 id="serviceTitle">Hobby Services</h2>
+                <div class="hobby-grid">
+                    <div class="hobby-card">
+                        <h3 id="srvDevTitle">Frontend Web Development</h3>
+                        <p id="srvDevText">Customizing highly responsive layout interfaces with elegant modern styles using native HTML, CSS, and interactive JavaScript architectures.</p>
+                    </div>
+                    <div class="hobby-card">
+                        <h3 id="srvMusicTitle">Amapiano & Afrobeats Production</h3>
+                        <p id="srvMusicText">Arranging dynamic rhythms, heavy percussion elements, log drum balances, and custom track visualizations for projects.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Contact Section Card Block -->
+            <div id="contactSection" class="page-section">
+                <h2 id="contactTitle">Contact Information</h2>
+                <p id="contactText">Reach out directly to submit recommendations, request web layout updates, or collaborate on digital design assets.</p>
+                <div class="contact-info">
+                    <div><strong>Developer:</strong> sugira fabrice</div>
+                    <div><strong>Role:</strong> Creative Digital Producer</div>
+                    <div><strong>Location:</strong> Rwanda</div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Permanent Footer Frame Element Box layout components -->
+    <footer class="site-footer">
+        <div>Developed by: <span>sugira fabrice</span></div>
+        <div id="liveClock" style="margin-top: 6px; font-size: 13px; opacity: 0.85;">Loading date and time data...</div>
+    </footer>
+
+    <script>
+        // Multilingual Translation Tables Databank Matrix
+        const translations = {
+            en: {
+                login: "login", home: "Home", about: "About", service: "Service", contact: "Contact",
+                title: "login to arsenal", userPlh: "username:", passPlh: "password:", emailPlh: "email:", submit: "submit",
+                ticket: "Match Ticket: £65.00", shirt: "Official Shirt: £80.00",
+                hTitle: "Welcome Gunners", hText: "Welcome to the premium fan platform hub. Explore dynamic match day features, store updates, and join the global family.",
+                aTitle: "About Us", aText: "Founded as Dial Square in 1886, our rich traditions and community connection drive our passion forward.",
+                sTitle: "Hobby Services", sDevT: "Frontend Web Development", sDevTxt: "Customizing highly responsive layout interfaces with elegant modern styles.",
+                sMusT: "Amapiano & Afrobeats Production", sMusTxt: "Arranging dynamic rhythms, heavy percussion elements, and track visualizations.",
+                cTitle: "Contact Information", cText: "Reach out directly to submit recommendations, request web layout updates, or collaborate."
+            },
+            es: {
+                login: "ingresar", home: "Inicio", about: "Nosotros", service: "Servicios", contact: "Contacto",
+                title: "iniciar sesión en arsenal", userPlh: "usuario:", passPlh: "contraseña:", emailPlh: "correo:", submit: "enviar",
+                ticket: "Entrada del Partido: €75.00", shirt: "Camiseta Oficial: €92.00",
+                hTitle: "Bienvenidos Gunners", hText: "Bienvenidos al portal premium. Explora las funções del día del partido y actualizaciones.",
+                aTitle: "Sobre Nosotros", aText: "Fundado em 1886, nuestras ricas tradiciones y conexión comunitaria nos impulsan.",
+                sTitle: "Servicios de Pasatiempo", sDevT: "Desarrollo Web Frontend", sDevTxt: "Personalización de interfaces con estilos interactivos nativos.",
+                sMusT: "Produção de Amapiano e Afrobeats", sMusTxt: "Arreglos de ritmos dinâmicos e elementos de percussão pesados.",
+                cTitle: "Información de Contacto", cText: "Comuníquese directamente para enviar recomendaciones o solicitar actualizaciones."
+            },
+            fr: {
+                login: "connexion", home: "Accueil", about: "À propos", service: "Services", contact: "Contact",
+                title: "connexion à arsenal", userPlh: "nom d'utilisateur:", passPlh: "mot de passe:", emailPlh: "e-mail:", submit: "envoyer",
+                ticket: "Billet de Match: €75.00", shirt: "Maillot Officiel: €92.00",
+                hTitle: "Bienvenue Gunners", hText: "Bienvenue sur le hub premium des fans. Découvrez les fonctionnalités des jours de match.",
+                aTitle: "À Propos de Nous", aText: "Fondé en 1886, nos riches traditions et notre lien avec la communauté nous guident.",
+                sTitle: "Services de Loisirs", sDevT: "Développement Web Frontend", sDevTxt: "Personnalisation d'interfaces avec des styles élégants.",
+                sMusT: "Production Amapiano & Afrobeats", sMusTxt: "Production de rythmes dynamiques et de visualisations audio.",
+                cTitle: "Informations de Contact", cText: "Contactez-nous directement pour soumettre des recommandations ou collaborer."
+            },
+            de: {
+                login: "anmelden", home: "Startseite", about: "Über uns", service: "Dienste", contact: "Kontakt",
+                title: "bei arsenal anmelden", userPlh: "Benutzername:", passPlh: "Passwort:", emailPlh: "E-Mail:", submit: "einsenden",
+                ticket: "Spielticket: €75.00", shirt: "Offizielles Trikot: €92.00",
+                hTitle: "Willkommen Gunners", hText: "Willkommen auf dem Premium-Fan-Hub. Entdecken Sie Funktionen am Spieltag.",
+                aTitle: "Über Uns", aText: "Gegründet im Jahr 1886, treiben uns unsere reichen Traditionen und unsere Leidenschaft an.",
+                sTitle: "Hobby-Dienstleistungen", sDevT: "Frontend-Webentwicklung", sDevTxt: "Anpassung von reaktionsschnellen Layout-Schnittstellen.",
+                sMusT: "Amapiano & Afrobeats Produktion", sMusTxt: "Arrangieren von dynamischen Rhythmen und Percussion-Elementen.",
+                cTitle: "Kontaktinformationen", cText: "Wenden Sie sich direkt an uns, um Empfehlungen einzureichen."
+            },
+            ar: {
+                login: "تسجيل الدخول", home: "الرئيسية", about: "من نحن", service: "الخدمات", contact: "اتصل بنا",
+                title: "تسجيل الدخول إلى أرسنال", userPlh: "اسم المستخدم:", passPlh: "كلمة المرور:", emailPlh: "البريد الإلكتروني:", submit: "إرسال",
+                ticket: "تذكرة المباراة: $80.00", shirt: "القميص الرسمي: $100.00",
+                hTitle: "مرحباً بجماهير الغنرز", hText: "مرحبًا بكم في منصة المشجعين المتميزة. استكشف ميزات يوم المباراة.",
+                aTitle: "معلومات عنا", aText: "تأسسنا عام 1886، وتقودنا تقاليدنا العريقة والروابط المجتمعية القوية.",
+                sTitle: "خدمات الهوايات", sDevT: "تطوير واجهات المواقع", sDevTxt: "تخصيص واجهات مستجيبة بأشكال حديثة وأنيقة.",
+                sMusT: "إنتاج موسيقى الأمابيانو والأفروبيتس", sMusTxt: "ترتيب الإيقاعات الديناميكية وعناصر الإيقاع القوية.",
+                cTitle: "معلومات الاتصال", cText: "تواصل معنا مباشرة لتقديم المقترحات أو طلب تحديثات التصميم."
+            },
+            zh: {
+                login: "登录", home: "首页", about: "关于我们", service: "服务", contact: "联系我们",
+                title: "登录到阿森纳", userPlh: "用户名:", passPlh: "密码:", emailPlh: "电子邮件:", submit: "提交",
+                ticket: "比赛门票: ¥580.00", shirt: "官方球衣: ¥710.00",
+                hTitle: "欢迎枪手球迷", hText: "欢迎来到高端球迷交流中心。探索精彩比赛日特写与球队资讯。",
+                aTitle: "关于我们", aText: "始创于1886年，悠久的历史传统和社区凝聚力激励着我们不断前行。",
+                sTitle: "爱好与技术服务", sDevT: "前端网页开发", sDevTxt: "使用原生前端技术定制具有现代质感的响应式界面。",
+                sMusT: "Amapiano & Afrobeats 音乐制作", sMusTxt: "编排极具律动感的重低音节奏、鼓点及音频视觉化效果。",
+                cTitle: "联系方式", cText: "直接与我们取得联系以提交建议、要求进行布局更新或开展业务合作。"
+            },
+            ja: {
+                login: "ログイン", home: "ホーム", about: "アバウト", service: "サービス", contact: "お問い合わせ",
+                title: "アーセナルにログイン", userPlh: "ユーザー名:", passPlh: "パスワード:", emailPlh: "メールアドレス:", submit: "送信",
+                ticket: "試合チケット: ¥12,000", shirt: "公式ユニフォーム: ¥14,500",
+                hTitle: "グナーズへようこそ", hText: "プレミアムファンポータルへようこそ。マッチデーの最新機能をご覧ください。",
+                aTitle: "クラブについて", aText: "1886年に創設され、豊かな伝統`コミュニティの絆が情熱を掻き立てます。",
+                sTitle: "趣味・提供サービス", sDevT: "フロントエンド開発", sDevTxt: "モダンなスタイルを取り入れたレスポンシブなUI設計を行います。",
+                sMusT: "Amapiano & Afrobeats 楽曲制作", sMusTxt: "躍動感のある重厚なログドラムのリズムとビジュアル動画の作成。",
+                cTitle: "お問い合わせ", cText: "ご要望、ウェブレイアウト更新の依頼、デジタル素材のコラボなどはこちらから。"
+            },
+            hi: {
+                login: "लॉगिन", home: "होम", about: "हमारे बारे में", service: "सेवाएँ", contact: "संपर्क करें",
+                title: "आर्सेनल में लॉगिन करें", userPlh: "यूज़रनेम:", passPlh: "पासवर्ड:", emailPlh: "ईमेल:", submit: "जमा करें",
+                ticket: "मैच टिकट: ₹6,500", shirt: "आधिकारिक जर्सी: ₹8,000",
+                hTitle: "गनर्स का स्वागत है", hText: "प्रीमियम प्रशंसक मंच केंद्र में आपका स्वागत है। मैच के दिनों की विशेष सुविधाओं का आनंद लें।",
+                aTitle: "हमारे बारे में", aText: "1886 में स्थापित, हमारी समृद्ध परंपराएं और समुदाय हमारे जुनून को आगे बढ़ाते हैं।",
+                sTitle: "हॉबी सेवाएँ", sDevT: "फ्रंटएंड वेब डेवलपमेंट", sDevTxt: "आधुनिक शैलियों के साथ उत्तरदायी लेआउट इंटरफेस को अनुकूलित करना।",
+                sMusT: "अमापियानो और अफ़्रोबीट्स प्रोडक्शन", sMusTxt: "गतिशील लय, भारी टक्कर तत्वों और ट्रैक विज़ुअलाइज़ेशन की व्यवस्था करना।",
+                cTitle: "संपर्क जानकारी", cText: "सिफारिशें सबमिट करने या सहयोग करने के लिए सीधे संपर्क करें।"
+            },
+            pt: {
+                login: "entrar", home: "Início", about: "Sobre", service: "Serviços", contact: "Contato",
+                title: "entrar no arsenal", userPlh: "usuário:", passPlh: "senha:", emailPlh: "e-mail:", submit: "enviar",
+                ticket: "Ingresso do Jogo: R$400.00", shirt: "Camisa Oficial: R$500.00",
+                hTitle: "Bem-vindos Gunners", hText: "Bem-vindo ao hub de fãs premium. Explore recursos dinâmicos e atualizações.",
+                aTitle: "Sobre Nós", aText: "Fundado em 1886, nossas ricas tradições e conexões com a comunidade movem nossa paixão.",
+                sTitle: "Serviços de Passatempo", sDevT: "Desenvolvimento Web Frontend", sDevTxt: "Customização de layouts altamente responsivos com estilos modernos.",
+                sMusT: "Produção de Amapiano & Afrobeats", sMusTxt: "Arranjos de ritmos dinâmicos e elementos de percussão pesada.",
+                cTitle: "Informações de Contato", cText: "Entre em contato diretamente para enviar sugestões ou solicitar layouts."
+            },
+            it: {
+                login: "accedi", home: "Home", about: "Chi Siamo", service: "Servizi", contact: "Contatti",
+                title: "accedi ad arsenal", userPlh: "username:", passPlh: "password:", emailPlh: "email:", submit: "invia",
+                ticket: "Biglietto Partita: €75.00", shirt: "Maglia Ufficiale: €92.00",
+                hTitle: "Benvenuti Gunners", hText: "Benvenuti nel portale premium dei tifosi. Esplora le funzionalità del giorno della partita.",
+                aTitle: "Chi Siamo", aText: "Fondati nel 1886, le nostre ricche tradizioni e il legame comunitario guidano la passione.",
+                sTitle: "Servizi di Hobby", sDevT: "Sviluppo Web Frontend", sDevTxt: "Personalizzazione di interfacce responsive con stili moderni ed eleganti.",
+                sMusT: "Produzione Amapiano & Afrobeats", sMusTxt: "Arrangement di ritmi dinamici, percussioni pesanti e video musicali.",
+                cTitle: "Informazioni di Contato", cText: "Contattaci direttamente per avviare raccomandazioni o richiedere modifiche."
+            }
+        };
+
+        // 1. Toggle Open/Close for Hidden Menu Bar Dropdown
+        function toggleMenuBar() {
+            const menu = document.getElementById('dropdownMenu');
+            const loginForm = document.getElementById('loginform');
+
+            if (menu.style.display === 'block') {
+                menu.style.display = 'none';
+            } else {
+                menu.style.display = 'block';
+                loginForm.style.display = 'none'; // Close form if menu opens
+            }
+        }
+
+        // 2. Section Router: Displays page and automatically closes dropdown
+        function navigateToSection(sectionId) {
+            // Hide all standard section elements
+            const sections = document.querySelectorAll('.page-section');
+            sections.forEach(sec => sec.style.display = 'none');
+
+            // Hide login form safely
+            document.getElementById('loginform').style.display = 'none';
+
+            // Show selected page content
+            document.getElementById(sectionId).style.display = 'flex';
+
+            // Clean-up: Close dropdown view instantly after selection
+            document.getElementById('dropdownMenu').style.display = 'none';
+        }
+
+        // 3. Language Matrix Switching Engine
+        function changeLanguage() {
+            const selectedLang = document.getElementById('langSelector').value;
+            const langData = translations[selectedLang];
+
+            // Set login buttons text strings
+            document.getElementById('loginBtn').innerText = langData.login;
+
+            // Translate options inside the dropdown list
+            document.getElementById('menuHome').innerText = langData.home;
+            document.getElementById('menuAbout').innerText = langData.about;
+            document.getElementById('menuService').innerText = langData.service;
+            document.getElementById('menuContact').innerText = langData.contact;
+
+            // Set login structural block variables fields
+            document.getElementById('loginTitle').innerText = langData.title;
+            document.getElementById('inputUser').placeholder = langData.userPlh;
+            document.getElementById('inputPass').placeholder = langData.passPlh;
+            document.getElementById('inputEmail').placeholder = langData.emailPlh;
+            document.getElementById('submitBtn').innerText = langData.submit;
+
+            // Update ticker displays
+            document.getElementById('ticketLabel').innerText = langData.ticket;
+            document.getElementById('shirtLabel').innerText = langData.shirt;
+
+            // Page content translation assignments text nodes
+            document.getElementById('homeTitle').innerText = langData.hTitle;
+            document.getElementById('homeText').innerText = langData.hText;
+            document.getElementById('aboutTitle').innerText = langData.aTitle;
+            document.getElementById('aboutText').innerText = langData.aText;
+            document.getElementById('serviceTitle').innerText = langData.sTitle;
+            document.getElementById('srvDevTitle').innerText = langData.sDevT;
+            document.getElementById('srvDevText').innerText = langData.sDevTxt;
+            document.getElementById('srvMusicTitle').innerText = langData.sMusT;
+            document.getElementById('srvMusicText').innerText = langData.sMusTxt;
+            document.getElementById('contactTitle').innerText = langData.cTitle;
+            document.getElementById('contactText').innerText = langData.cText;
+        }
+
+        // 4. Dynamic Real-time Clock Component Setup
+        function updateClock() {
+            const now = new Date();
+            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            const dateString = now.toLocaleDateString(undefined, options);
+            const timeString = now.toLocaleTimeString();
+            document.getElementById('liveClock').innerText = `${dateString} | ${timeString}`;
+        }
+        
+        setInterval(updateClock, 1000);
+        updateClock();
+
+        // 5. Login Layout Element Toggler Window Control
+        function toggleloginform() {
+            const form = document.getElementById('loginform');
+            const menu = document.getElementById('dropdownMenu');
+            const sections = document.querySelectorAll('.page-section');
+
+            if (form.style.display === 'flex') {
+                form.style.display = 'none';
+                document.getElementById('homeSection').style.display = 'flex'; // Reset view to home default state
+            } else {
+                sections.forEach(sec => sec.style.display = 'none');
+                form.style.display = 'flex';
+                menu.style.display = 'none'; // Close dropdown if login form opens
+            }
+        }
+    </script>
+</body>
+
+</html>
